@@ -1,0 +1,22 @@
+import pandas as pd #data manipulation and analysis package
+from alpha_vantage.timeseries import TimeSeries #enables data pull from Alpha Vantage
+import matplotlib.pyplot as plt #if you want to plot your findings
+import time
+import smtplib #enables you to send emails
+ts = TimeSeries(key='CZK4PSW4EWOIOSUG', output_format='pandas')
+data, meta_data = ts.get_intraday(symbol='MSFT',interval='1min', outputsize='full')
+close_data = data['4. close'] #The close data column
+last_price = close_data[0] #Selecting the last price from the close_data column
+print(last_price)
+sender_email = "puja.kumari@gmail.com" 
+rec_email = "krish.sharma@gmail.com" 
+password = ("password")
+message = "MSFT STOCK ALERT!!! The stock is at above price you set " + "%.6f" % last_price #The message you want to send
+target_sell_price = 220 #enter the price you want to sell at
+if last_price > target_sell_price:
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(sender_email, password) #logs into your email account
+    print("Login Success")#confirms that you have logged in succesfully
+    server.sendmail(sender_email, rec_email, message)#send the email with your custom mesage
+    print("Email was sent") #confirms that the email was sent
